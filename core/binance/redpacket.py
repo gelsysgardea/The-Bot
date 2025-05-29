@@ -4,6 +4,7 @@ import random
 from datetime import datetime
 
 from core.binance.api import BinanceAPI
+from core.utils import logger
 
 from typing import Literal
 
@@ -14,9 +15,15 @@ class RedpacketHandler:
     ]
 
     def __init__(self) -> None:
+        # Timestamp of the start of the current hour, used to reset PROCESSED_CODES hourly.
         self.LAST_TIMESTAMP = 0
+        # Stores codes that have been processed in the current hour to prevent duplicates.
         self.PROCESSED_CODES: list = []
+        # Flag indicating if a timeout (e.g., captcha, rate limit) is active, pausing operations for an hour.
         self.IS_TIMEOUT: bool = False
+        # Flag to ensure codes are processed sequentially and to halt processing during a timeout.
+        # True if the last code was processed successfully or if ready for a new code.
+        # False if a code is currently being processed or if a timeout is active.
         self.IS_LAST_PROCESSED: bool = True
 
     async def handle_response(self, response: httpx.Response) -> TYPES:
@@ -33,11 +40,11 @@ class RedpacketHandler:
         if response_json["success"]:
             currency = response_json["data"]["currency"]
             amount = response_json["data"]["grabAmountStr"]
-            print(f"[ CLAIMED ] {amount} {currency}")
+            logger.success(f"CLAIMED: {amount} {currency}")
             return "claimed"
 
         elif data and "validateId" in data:
-            print(f"[ WARNING ] Captcha detected: sleeping for 1 hour.")
+            logger.warning("Captcha detected. Pausing operations for 1 hour.")
             return "captcha"
 
         elif code not in [
@@ -47,26 +54,24 @@ class RedpacketHandler:
             "403803",
             "PAY4001COM000",
         ]:
-            print(f"[ ERROR] An unexpected return type: {response_json}")
+            logger.error(f"Unexpected Binance API response: {response_json}")
             return "processed"
 
         match code:
             case "100002001":
-                print(
-                    "Session expired, please re-enter new credentials in core/config.py"
-                )
+                logger.error("Binance session expired. Please update credentials in .env file.")
                 return "session_expired"
             case "403067":
-                print("Too many requests: sleeping for 1 hour")
+                logger.warning("Too many requests to Binance API. Pausing operations for 1 hour.")
                 return "too_many_requests"
             case "403802":
-                print("Redpacket is already fully-claimed.")
+                logger.info("Redpacket already fully claimed.")
                 return "processed"
             case "403803":
-                print("Invalid repacket code entered.")
+                logger.info("Invalid redpacket code entered.")
                 return "processed"
             case "PAY4001COM000":
-                print("Invalid repacket code entered.")
+                logger.info("Invalid redpacket code entered.")
                 return "processed"
 
     async def handle_codes(self, code: str) -> None:
@@ -93,7 +98,7 @@ class RedpacketHandler:
             self.PROCESSED_CODES.append(code)
             self.IS_LAST_PROCESSED = False
 
-            print(f"> Processing {code}...")
+            logger.info(f"Processing code: {code}")
 
             await asyncio.sleep(random.randint(1, 5))
             result: RedpacketHandler.TYPES = await self.handle_response(
@@ -110,7 +115,7 @@ class RedpacketHandler:
                     self.PROCESSED_CODES.append(code)
 
         else:
-            print("[ INFO] Sleeping for one hour.")
+            logger.info("Timeout active. Sleeping for one hour.")
             self.IS_TIMEOUT = True
             self.IS_LAST_PROCESSED = False
             self.PROCESSED_CODES.clear()
