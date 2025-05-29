@@ -20,7 +20,6 @@ logger = setup_logging(config.LOG_LEVEL)
 
 # Importar después de configurar el logging
 from core.telegram import BaseClient
-from source import custom_print
 
 def print_banner():
     """Muestra el banner de la aplicación."""

@@ -10,6 +10,12 @@ from typing import Union, Dict, Any, List
 from pathlib import Path
 from dotenv import load_dotenv
 
+def _parse_chat_ids(chat_ids_str: str) -> List[int]:
+    """Parsea una cadena de IDs de chat separados por comas a una lista de enteros."""
+    if not chat_ids_str:
+        return []
+    return [int(chat_id.strip()) for chat_id in chat_ids_str.split(',') if chat_id.strip()]
+
 # Cargar variables de entorno desde .env
 env_path = Path(__file__).parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -21,13 +27,6 @@ class BaseConfig:
     Esta clase maneja toda la configuración necesaria para el funcionamiento del bot.
     """
     """Clase base de configuración para el bot de Binance RedPacket."""
-    
-    # Lista de chats a monitorear
-    CHATS: List[int] = [
-        -1001515379979,  # Binance Crypto Box Code
-        -1001813092752,  # Binance Red packet crypto box
-        -1001610472708,  # 🐋 Chat Whale Box 🎁
-    ]
 
     # Configuración de la API de Telegram
     CLIENT_NAME: str = os.getenv('TELEGRAM_CLIENT_NAME', 'BinanceRedPacketBot')
@@ -41,6 +40,13 @@ class BaseConfig:
     # Configuración de la aplicación
     LOG_LEVEL: str = os.getenv('LOG_LEVEL', 'INFO')
     DEBUG: bool = os.getenv('DEBUG', 'False').lower() == 'true'
+
+    @property
+    def CHATS(self) -> List[int]:
+        """Devuelve la lista de chats a monitorear desde variables de entorno o un valor por defecto."""
+        default_chats_string = "-1001515379979,-1001813092752,-1001610472708"
+        chats_str = os.getenv('TELEGRAM_CHAT_IDS', default_chats_string)
+        return _parse_chat_ids(chats_str)
     
     # Headers para las peticiones HTTP
     @property

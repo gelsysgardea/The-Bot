@@ -12,9 +12,21 @@ git clone https://github.com/devbutlazy/Binance-RedPacket-Wrapper
 ```
 `4` Navigate to project folder: `cd PATH)_TO_PROJECT`  
 `5` Install required packages: `pip install -r requirements.txt`
-`6` Enter the telegram API_HASH and API_ID to `core/config.py` from [here](https://my.telegram.org/auth)    
-`7` Login to your [Binance Account](https://www.binance.com/uk-UA), go to [Binance Crypto Box](https://www.binance.com/uk-UA/my/wallet/account/payment/cryptobox) press F12 and go to `Network`. After that, enter a valid Crypto Box code. When entered, look for "grabV2" POST method in `Network` section. When found, go to POST method `Request Headers` and copy-paste all the neccessery information (cookie, device_info, id, etc...) from there to `core/config.py`.  
-`8` Run the program:
+`6` **Set up Configuration:**
+    a. In the project folder, copy the `.env.example` file and rename the copy to `.env`.
+    b. Open the `.env` file and enter your Telegram API credentials:
+        - `TELEGRAM_API_ID`: Your API ID from [my.telegram.org](https://my.telegram.org/auth).
+        - `TELEGRAM_API_HASH`: Your API Hash from [my.telegram.org](https://my.telegram.org/auth).
+    c. Obtain Binance Headers:
+        - Login to your [Binance Account](https://www.binance.com/uk-UA).
+        - Go to the [Binance Crypto Box](https://www.binance.com/uk-UA/my/wallet/account/payment/cryptobox) page.
+        - Open your browser's Developer Tools (usually F12) and go to the 'Network' tab.
+        - Perform an action like trying to claim a Crypto Box.
+        - Look for a "grabV2" (or similar) POST request in the Network tab.
+        - In the 'Request Headers' section of this request, find and copy the values for: `Cookie`, `bnc-uuid`, `device-info`, `csrftoken`, `fvideo-id`, `fvideo-token`, and `User-Agent`.
+    d. In the `.env` file, paste these values into the corresponding variables (e.g., `BINANCE_COOKIE`, `BNC_UUID`, etc.).
+    e. (Optional) You can customize the list of Telegram chats to monitor by editing `TELEGRAM_CHAT_IDS` in the `.env` file. This should be a comma-separated list of chat IDs.
+`7` Run the program:
 ```
 python main.py
 ```
@@ -26,7 +38,7 @@ python main.py
     
     - The token is passed to Binance API within 1-5 seconds (to prevent input automation). 
 
-    - Better configuration in core/config.py
+    - Centralized configuration using an `.env` file for API keys, Binance headers, and bot settings.
 
     - The console gives information about found crypto-tokens, amount and valid-state.
 
@@ -37,7 +49,7 @@ python main.py
 `1.` If you want to compile with console, run the `BUILD/with_console.bat`  
 `2.` If you want to compile WITHOUGHT console, run `BUILD/without_console.bat`
 
-**NOTE: Cookies, and other configurations should be entered in `core/config.py`, before running pyinstaller!** 
+**NOTE: All configurations, including API keys and Binance headers, should be set in the `.env` file before attempting to build an EXE.** 
 
 
 ### (c) License: MIT-LICENSE
