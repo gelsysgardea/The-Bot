@@ -1,8 +1,11 @@
+import re
 from telethon import TelegramClient, events
 
 from core.config import config
 from core.binance.redpacket import RedpacketHandler
+from core.utils import logger
 
+BINANCE_CODE_REGEX = re.compile(r'\b([a-zA-Z0-9]{8})\b')
 
 class BaseClient:
     def __init__(self):
@@ -16,26 +19,23 @@ class BaseClient:
         @self.CLIENT.on(events.NewMessage(chats=config.CHATS))
         async def _(event: events.NewMessage.Event):
             try:
-                token = ""
-                if event.chat_id == -1001610472708:
-                    token = event.raw_text[4:13:].strip()
+                logger.debug(f"New message from chat {event.chat_id}: {event.raw_text}")
+                
+                found_codes = BINANCE_CODE_REGEX.findall(event.raw_text)
+                
+                if not found_codes:
+                    logger.debug(f"No Binance codes found in message: {event.raw_text}")
+                    return
 
-                if event.chat_id in [-1001813092752, -1001515379979]:
-                    if (
-                        not len(event.raw_text) == 8
-                        or len(event.raw_text.split(" ")) > 1
-                    ):
-                        return None
-                    
-                    token = event.raw_text.strip()
-
-                await self.HANDLER.handle_codes(token)
-            except TimeoutError:
-                print("An unexpected error occurred while fetching a message")
-                await self.HANDLER.handle_codes(token)
+                for token in found_codes:
+                    logger.info(f"Potential Binance code found: {token}")
+                    await self.HANDLER.handle_codes(token)
+            
+            except Exception as e:
+                logger.error(f"Error processing message: {event.raw_text}. Error: {e}", exc_info=True)
 
     def start(self)-> None:
-        print("Starting the proccesses...")
-        self.client.start()
-        print("Telethon started, waiting for messages")
-        self.client.run_until_disconnected()
+        logger.info("Starting the processes...")
+        self.CLIENT.start()
+        logger.info("Telethon started, waiting for messages")
+        self.CLIENT.run_until_disconnected()

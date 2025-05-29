@@ -1,6 +1,7 @@
 import httpx
 
 from core.config import config
+from core.utils import logger
 
 from typing import Optional
 
@@ -21,10 +22,15 @@ class BinanceAPI:
                         "grabCode": redpacket_code,
                         "scene": None,
                     },
+                    timeout=10.0  # Added timeout
                 )
-                return response
-            except BaseException as error:
-                print(
-                    f"An unexpected error occured while processing the POST request to Binance API:\n{error=}"
-                )
+                return response # Return response directly for RedpacketHandler to process
+            except httpx.TimeoutException as e:
+                logger.error(f"Binance API request timed out for code {redpacket_code}: {e}")
+                return None
+            except httpx.RequestError as e:
+                logger.error(f"Binance API request failed for code {redpacket_code} (network/request issue): {e}")
+                return None
+            except Exception as e:
+                logger.error(f"An unexpected error occurred during Binance API POST request for code {redpacket_code}: {e}", exc_info=True)
                 return None
