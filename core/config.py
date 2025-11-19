@@ -5,6 +5,9 @@ Este módulo maneja la configuración de la aplicación, incluyendo credenciales
 parámetros de conexión y configuraciones de usuario.
 """
 import os
+import uuid
+import time
+import random
 from dataclasses import dataclass
 from typing import Union, Dict, Any, List
 from pathlib import Path
