@@ -1,9 +1,21 @@
-import httpx
+import asyncio
+import json
+import time
+from typing import Optional, Dict, Any
+
+try:
+    from curl_cffi.requests import AsyncSession, AsyncResponse
+    CURL_CFFI_AVAILABLE = True
+except ImportError:
+    try:
+        import httpx
+        from httpx import AsyncClient as AsyncSession, Response as AsyncResponse
+        CURL_CFFI_AVAILABLE = False
+    except ImportError:
+        raise ImportError("Neither curl_cffi nor httpx is available. Install curl_cffi for best anti-bot protection.")
 
 from core.config import config
 from core.utils import logger
-
-from typing import Optional
 
 
 class BinanceAPI:
