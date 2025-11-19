@@ -2,9 +2,13 @@
 Punto de entrada principal para el Binance RedPacket Bot.
 
 Este script inicia el bot de Telegram para monitorear y reclamar sobres rojos de Binance.
+Versión mejorada con integración de dashboard y sistema anti-ban avanzado.
 """
 import asyncio
 import sys
+import os
+import signal
+import argparse
 from pathlib import Path
 
 # Configurar el path para importaciones
@@ -20,6 +24,7 @@ logger = setup_logging(config.LOG_LEVEL)
 
 # Importar después de configurar el logging
 from core.telegram import BaseClient
+from dashboard_integration import dashboard_integration
 
 def print_banner():
     """Muestra el banner de la aplicación."""
