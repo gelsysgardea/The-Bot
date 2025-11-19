@@ -32,22 +32,78 @@ git clone https://github.com/devbutlazy/Binance-RedPacket-Wrapper
     d. In the `.env` file, paste these values into the corresponding variables (e.g., `BINANCE_COOKIE`, `BNC_UUID`, etc.).
     e. (Optional) You can customize the list of Telegram chats to monitor by editing `TELEGRAM_CHAT_IDS` in the `.env` file. This should be a comma-separated list of chat IDs.
 `7` Run the program:
+```bash
+# Opción 1: Con Dashboard (Recomendado)
+python main.py --dashboard
+
+# Opción 2: Headless (Sin dashboard)
+python main.py --headless
+
+# Opción 3: Con ADB Fallback
+python main.py --adb-fallback
+
+# Opción 4: Dashboard standalone
+streamlit run dashboard_app.py
 ```
-python main.py
+
+# 🆕 Enhanced Features [v3.0.0]
+
+### 🛡️ **Anti-Ban 2025 Advanced System**
+- **TLS Fingerprinting**: curl_cffi con JA3 rotation para evadir detección avanzada
+- **Header Rotation**: Rotación automática cada 5 claims (User-Agents, Device IDs, Trace IDs)
+- **Risk-Based Delays**: Delays adaptativos (8-90s) basados en score de riesgo
+- **Ban Signal Detection**: Detección en tiempo real de señales de ban (403, CAPTCHA, etc.)
+- **Exponential Backoff**: Reintentos inteligentes (3s → 9s → 27s)
+
+### 📊 **Real-Time Dashboard**
+- **Live Metrics**: Claims del día, BNB ganados, tasa de éxito, fallos
+- **Interactive Charts**: Claims por hora, distribución de métodos, tendencias de riesgo
+- **Emergency Controls**: Botón rojo "MODO SIERPE" con pausa de 12h
+- **Manual Testing**: Input manual de códigos para testing
+- **WebSocket Bridge**: Actualizaciones en tiempo real sin refresh
+
+### 📱 **Enhanced Telegram Bot**
+- **Code Queueing**: Sistema de colas con prioridad y deduplicación
+- **Admin Commands**: `/status`, `/emergency [h]`, `/resume`, `/claim <code>`
+- **Smart Notifications**: Solo para claims > 0.01 BNB
+- **Rate Limiting**: Máximo 10 códigos por minuto
+- **Background Tasks**: Monitoreo automático y mantenimiento
+
+### 🤖 **ADB Fallback System**
+- **Redmi Note 12 Support**: Coordenadas UHD pre-calibradas (3840x2160)
+- **Device Coordinator**: Gestión de estado y salud del dispositivo
+- **Screenshot Verification**: Capturas para validación
+- **Auto-Recovery**: Recuperación automática de fallos
+- **Session Management**: Refresh vía ADB
+
+### 🚨 **MODO SIERPE - Emergency Mode**
+- **Automatic Activation**: Risk score ≥ 85, 3+ fallos consecutivos, CAPTCHA
+- **Manual Controls**: Dashboard botón, Telegram comandos
+- **Smart Mitigation**: Session refresh, header rotation, extended delays
+- **Recovery Procedures**: Desactivación segura y reanudación
+
+### 🧪 **Comprehensive Testing**
+- **System Validation**: Test suite completo (`python test_system.py`)
+- **Component Testing**: API client, Telegram bot, ADB, dashboard
+- **Integration Testing**: Flujo completo end-to-end
+- **Performance Testing**: Memory, CPU, response times
+
+# 🎯 How it works? Enhanced Flow
+
+```
+Telegram Message → Code Detection → Queue Management → Risk Assessment
+                    ↓
+API Claim Attempt → Ban Signal Analysis → Success/Fallback → Dashboard Update
+                    ↓
+ADB Fallback (if needed) → Device Automation → Screenshot Verification → Complete
 ```
 
-# How it works? What are the features?
-
-### [v2.0.0]
-    - Rewritten to a new user-bot lib: migration pyrogram => telethon (for better efficiency)
-    
-    - The token is passed to Binance API within 1-5 seconds (to prevent input automation). 
-
-    - Centralized configuration using an `.env` file for API keys, Binance headers, and bot settings.
-
-    - The console gives information about found crypto-tokens, amount and valid-state.
-
-    - If there is a timeout, the programm will CORRECTLY pause all the proccesses.
+### Original Features [v2.0.0]
+    - Migración pyrogram => telethon (mejor eficiencia)
+    - Token procesado en 1-5 segundos (anti-automatización)
+    - Configuración centralizada en archivo `.env`
+    - Información detallada en consola
+    - Manejo correcto de timeouts y pausas
 
 # How to create an EXE file from python code?
 `0.` Type in all correct information into `core/config.py`  
