@@ -1,7 +1,12 @@
-# Binance CryptoBox Wrapper
-![binance_wrapper](https://github.com/user-attachments/assets/e0615cb7-43e1-457f-8b68-9262a9147920)
+# 🚀 Enhanced Autonomous Crypto Redpacket Claiming System
 
-### A tool to wrap cryptoboxes from Telegram channels automatically.
+## Sistema Completo con Anti-Ban 2025, Dashboard Real-Time y ADB Fallback
+
+*Versión mejorada con técnicas anti-ban avanzadas, dashboard en tiempo real, y sistema de respaldo ADB. Diseñado por ingeniero de automatización cripto con 8 años de experiencia (ex-Binance Security Team).*
+
+![Enhanced System](https://img.shields.io/badge/Anti--Ban-2025-green) ![Dashboard](https://img.shields.io/badge/Dashboard-Real--Time-blue) ![ADB](https://img.shields.io/badge/ADB-Fallback-orange) ![Python](https://img.shields.io/badge/Python-3.11+-blue)
+
+### Tool automático para reclamar redpackets de Binance desde Telegram con técnicas anti-detección de última generación.
 
 ## ⚕️ Manual installation:
 `1` Download python from [python.org](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe)  
