@@ -15,7 +15,7 @@
 - **Corrección propuesta**:
   ```python
   API_ID: int = 12345678  # Reemplazar con ID real de Telegram API
-  API_HASH: str = "***REMOVED***"  # Reemplazar con hash real
+  API_HASH: str = ""  # Reemplazar con hash real
   ```
 
 ### 2. HEADERS INCOMPLETOS (core/config.py)
